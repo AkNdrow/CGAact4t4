@@ -19,3 +19,15 @@ Sanctum es mucho más simple de configurar, no requiere claves de encriptación 
 - **Modelo de Usuario:** Se debe añadir el trait `HasApiTokens` a la clase `User`. Este trait es el encargado de brindarnos el método `createToken()`.
 - **Registro:** Recibe los datos, los valida (usando la función `validate()`), guarda el usuario en la BD encriptando el password mediante `Hash::make()` y retorna el usuario registrado en formato JSON.
 - **Login:** Busca al usuario, verifica la contraseña y en caso de éxito, ejecuta `$user->createToken('auth_token')->plainTextToken`. Este token es el que entregaremos en nuestras peticiones subsiguientes.
+
+## 3. Entidades y API Resources
+Para el CRUD, hemos creado una entidad de ejemplo llamada `Item`. Esta entidad cuenta con su modelo, migración y un controlador.
+
+**Modelo y Relaciones:**
+En Laravel, las tablas relacionales se expresan en los Modelos. 
+- En el modelo `Item` establecimos la relación `user()` (`belongsTo`), indicando que un Item le pertenece a un Usuario.
+- En el modelo `User` establecimos la relación `items()` (`hasMany`), indicando que un Usuario puede tener muchos Items.
+
+**API Resources (JsonResource):**
+Cuando retornamos un Modelo directamente desde el controlador, Laravel lo convierte a JSON exponiendo todas sus columnas. Los **API Resources** sirven como una "capa de transformación" para formatear cómo queremos que se devuelvan los datos. 
+- En el archivo `ItemResource` hemos definido explícitamente qué campos queremos mostrar (`id`, `name`, `description`, `user_id` y fechas formateadas). Esto nos permite ocultar columnas sensibles en el futuro o cambiar nombres de variables en la respuesta JSON sin afectar la estructura de la base de datos.
