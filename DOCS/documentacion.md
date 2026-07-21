@@ -31,3 +31,16 @@ En Laravel, las tablas relacionales se expresan en los Modelos.
 **API Resources (JsonResource):**
 Cuando retornamos un Modelo directamente desde el controlador, Laravel lo convierte a JSON exponiendo todas sus columnas. Los **API Resources** sirven como una "capa de transformación" para formatear cómo queremos que se devuelvan los datos. 
 - En el archivo `ItemResource` hemos definido explícitamente qué campos queremos mostrar (`id`, `name`, `description`, `user_id` y fechas formateadas). Esto nos permite ocultar columnas sensibles en el futuro o cambiar nombres de variables en la respuesta JSON sin afectar la estructura de la base de datos.
+
+## 4. Endpoints CRUD y Validaciones
+Los endpoints de nuestra API han sido desarrollados en el `ItemController` y protegidos.
+
+**Protección y Rutas:**
+- Usando `Route::apiResource('items', ItemController::class);` bajo el middleware `auth:sanctum` nos aseguramos de que *cualquier* petición a `/api/items` requiera obligatoriamente un token de autorización.
+
+**Lógica de Controlador y Autorización:**
+- **index / store:** Hacen uso de `$request->user()->items()` para garantizar que un usuario sólo liste sus propios ítems, y que al crear uno, automáticamente se asigne su `user_id`.
+- **show / update / destroy:** Antes de retornar o modificar, se verifica: `if ($request->user()->id !== $item->user_id)`. Esto previene que un usuario con un token válido pueda modificar o eliminar el ítem de otro usuario (retornando un error 403 Forbidden).
+
+**Validaciones Automáticas:**
+- Laravel maneja el método `$request->validate()` inteligentemente. Al estar en el contexto de una API (debido al header `Accept: application/json` que debe enviar el cliente), si una validación falla (como un nombre vacío), Laravel *automáticamente* detiene el controlador y devuelve un HTTP 422 Unprocessable Entity con la lista JSON de errores. No hace falta hacer `try-catch` manualmente para los errores de validación.
