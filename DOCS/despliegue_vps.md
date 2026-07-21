@@ -3,12 +3,13 @@
 Este documento detalla los pasos exactos para llevar la API REST creada desde tu entorno de desarrollo hacia un servidor virtual privado (VPS) en producción con **Nginx**, **PHP** y **MySQL** ya instalados.
 
 ## 1. Clonar el repositorio
-Ingresa a tu servidor por SSH. Lo más habitual es ubicar el proyecto dentro de `/var/www/`.
+Ingresa a tu servidor por SSH. Posiciónate en el directorio donde alojas tus proyectos.
 ```bash
-cd /var/www/
-git clone https://github.com/TuUsuario/api-CRUD.git
-cd api-CRUD
+cd /var/www/html/AndresFolder/
+git clone https://github.com/AkNdrow/CGAact4t4.git
+cd CGAact4t4
 ```
+*(Nota: Si ya clonaste el proyecto y estás dentro de la carpeta `CGAact4t4`, puedes saltar al paso 2).*
 
 ## 2. Instalar dependencias con Composer
 Como es un entorno de producción, debemos instalar las dependencias omitiendo los paquetes de desarrollo y optimizando el autoloader.
@@ -50,13 +51,13 @@ php artisan migrate --force
 ```
 
 ## 5. Ajustar permisos de directorios
-Nginx y PHP-FPM suelen ejecutarse bajo el usuario `www-data` (en Ubuntu/Debian). Es obligatorio que los directorios `storage` y `bootstrap/cache` tengan permisos de escritura.
+Nginx y PHP-FPM suelen ejecutarse bajo el usuario `www-data` (en Ubuntu/Debian). Es obligatorio que los directorios `storage` y `bootstrap/cache` tengan permisos de escritura. Asegúrate de indicar las rutas absolutas de tu proyecto:
 ```bash
-sudo chown -R www-data:www-data /var/www/api-CRUD
-sudo find /var/www/api-CRUD -type f -exec chmod 644 {} \;
-sudo find /var/www/api-CRUD -type d -exec chmod 755 {} \;
-sudo chmod -R 775 /var/www/api-CRUD/storage
-sudo chmod -R 775 /var/www/api-CRUD/bootstrap/cache
+sudo chown -R www-data:www-data /var/www/html/AndresFolder/CGAact4t4
+sudo find /var/www/html/AndresFolder/CGAact4t4 -type f -exec chmod 644 {} \;
+sudo find /var/www/html/AndresFolder/CGAact4t4 -type d -exec chmod 755 {} \;
+sudo chmod -R 775 /var/www/html/AndresFolder/CGAact4t4/storage
+sudo chmod -R 775 /var/www/html/AndresFolder/CGAact4t4/bootstrap/cache
 ```
 
 ## 6. Configurar Nginx (Virtual Host)
@@ -74,7 +75,7 @@ server {
     server_name tu-dominio.com; # O la IP de tu VPS
     
     # IMPORTANTE: El root DEBE apuntar a la carpeta public de Laravel
-    root /var/www/api-CRUD/public;
+    root /var/www/html/AndresFolder/CGAact4t4/public;
  
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";

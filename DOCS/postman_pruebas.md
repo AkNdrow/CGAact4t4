@@ -92,3 +92,16 @@ Para los endpoints protegidos (CRUD de Items):
 - **URL:** `/api/items/{id}`
 - **Autorización:** Bearer Token
 - **Respuesta esperada:** 200 OK con el mensaje "Ítem eliminado correctamente".
+
+---
+
+## 5. Pruebas en el Servidor VPS (Producción)
+Para ejecutar estas mismas pruebas contra tu API real en producción (en el VPS), **lo único que cambia es la URL base**. 
+
+Los métodos (`GET`, `POST`, etc.), los Headers (`Accept: application/json`), el formato del Body y la Autorización (`Bearer Token`) siguen siendo exactamente los mismos.
+
+Solo debes reemplazar el dominio de desarrollo por el dominio de tu servidor. Por ejemplo:
+- De: `http://localhost:8000/api/register`
+- A: `http://andrescg.duckdns.org/api/register`
+
+Aplica esto para todos los endpoints (`/api/login`, `/api/items`, etc.) y Postman se conectará directamente a tu entorno de producción en el VPS.
